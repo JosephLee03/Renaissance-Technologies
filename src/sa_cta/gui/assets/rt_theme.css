@@ -1,0 +1,37 @@
+:root {
+  --rt-bg: #02040b;
+  --rt-panel: #0b1324;
+  --rt-accent: #00d4ff;
+  --rt-accent2: #55efc4;
+  --rt-text: #e8f1ff;
+}
+
+html,
+body {
+  background: radial-gradient(circle at 18% 0%, #112645 0%, #050a15 45%, #02040b 100%);
+  color: var(--rt-text);
+}
+
+.rt-tabs {
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.12);
+}
+
+.rt-tab {
+  transition: all 0.2s ease;
+}
+
+.rt-tab:hover {
+  background: rgba(0, 212, 255, 0.1) !important;
+  color: var(--rt-accent) !important;
+}
+
+.rt-tab-selected {
+  box-shadow: inset 0 3px 0 rgba(0, 212, 255, 0.9);
+}
+
+.js-plotly-plot .plotly .main-svg {
+  border-radius: 10px;
+}

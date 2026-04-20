@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime outputs
+artifacts/
+*.log
+
+# Local databases
+*.sqlite
+*.db
+
+# Large raw data (keep out of git)
+data/
+
+# Temp scripts
+stress_test.py
