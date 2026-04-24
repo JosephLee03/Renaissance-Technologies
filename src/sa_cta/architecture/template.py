@@ -88,8 +88,10 @@ class PipelineTemplate(ABC):
         self.event_bus.publish("persistence.completed", {"database_enabled": bool(context.config.database["enabled"])})
 
         response = self.build_response(context, outputs)
-        self.event_bus.publish("pipeline.completed", {"run_id": context.run_id})
+        summary = self.build_run_summary(context, frames, outputs, response)
+        self.event_bus.publish("pipeline.completed", {"run_id": context.run_id, "summary": summary})
         response.lifecycle_events = self.event_recorder.to_payload()
+        response.run_summary = summary
         return response.to_dict()
 
     @abstractmethod
@@ -148,6 +150,36 @@ class PipelineTemplate(ABC):
     @abstractmethod
     def build_response(self, context: PipelineContext, outputs: PipelineOutputs) -> PipelineResponse:
         raise NotImplementedError
+
+    def build_run_summary(
+        self,
+        context: PipelineContext,
+        frames: PipelineFrames,
+        outputs: PipelineOutputs,
+        response: PipelineResponse,
+    ) -> Dict[str, object]:
+        equity_df = frames.equity_df
+        final_equity = float(equity_df["equity"].iloc[-1]) if not equity_df.empty and "equity" in equity_df else float(context.config.output["initial_capital"])
+        total_return = float(response.metrics.get("total_return", 0.0))
+        max_drawdown = float(response.metrics.get("max_drawdown", 0.0))
+        total_trades = int(len(frames.trades_df))
+        total_fills = int(len(frames.fills_df))
+        total_days = int(len(context.backtest_days))
+
+        return {
+            "run_id": context.run_id,
+            "selected_day_count": int(len(context.selected_days)),
+            "backtest_day_count": total_days,
+            "signal_rows": int(len(frames.signal_df)),
+            "order_rows": int(len(frames.orders_df)),
+            "fill_rows": total_fills,
+            "trade_rows": total_trades,
+            "final_equity": final_equity,
+            "total_return": total_return,
+            "max_drawdown": max_drawdown,
+            "artifacts_dir": str(context.artifacts_dir),
+            "log_file_path": context.log_file_path,
+        }
 
 
 class IntradayCTAPipeline(PipelineTemplate):

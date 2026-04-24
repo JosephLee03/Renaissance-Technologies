@@ -31,6 +31,12 @@ def main() -> None:
     print("Artifacts:", result["artifacts_dir"])
     if result.get("log_file_path"):
         print("Log File:", result["log_file_path"])
+
+    run_summary = result.get("run_summary", {})
+    if run_summary:
+        print("Run Summary:")
+        print(json.dumps(run_summary, indent=2, ensure_ascii=True))
+
     print("Lifecycle Event Count:", len(result.get("lifecycle_events", [])))
     print("Metrics:")
     print(json.dumps(result["metrics"], indent=2, ensure_ascii=True))

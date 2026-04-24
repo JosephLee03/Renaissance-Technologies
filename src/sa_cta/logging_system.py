@@ -16,7 +16,13 @@ class PipelineLoggingObserver:
 
     def on_event(self, event: PipelineEvent) -> None:
         payload = json.dumps(event.payload, ensure_ascii=True, default=str)
-        self.logger.info("stage=%s payload=%s", event.stage, payload)
+        stage = str(event.stage)
+        if stage.endswith(".started") or stage.endswith(".completed"):
+            self.logger.info("stage=%s payload=%s", stage, payload)
+        elif stage.endswith(".failed"):
+            self.logger.error("stage=%s payload=%s", stage, payload)
+        else:
+            self.logger.warning("stage=%s payload=%s", stage, payload)
 
 
 def configure_run_logger(project_root: Path, config: AppConfig, run_id: str) -> Tuple[str, str, int]:

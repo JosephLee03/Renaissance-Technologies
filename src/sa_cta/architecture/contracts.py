@@ -183,6 +183,7 @@ class PipelineResponse:
     strategy_summary_path: str
     execution_summary_path: str
     log_file_path: str = ""
+    run_summary: Dict[str, Any] = field(default_factory=dict)
     lifecycle_events: List[Dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -199,5 +200,6 @@ class PipelineResponse:
             "strategy_summary_path": self.strategy_summary_path,
             "execution_summary_path": self.execution_summary_path,
             "log_file_path": self.log_file_path,
+            "run_summary": self.run_summary,
             "lifecycle_events": self.lifecycle_events,
         }
